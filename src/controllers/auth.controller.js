@@ -1,6 +1,7 @@
 const userModel = require('../models/user.model.js');
 const asyncHandler = require('../utils/asyncHandler.js');
 const jwt = require('jsonwebtoken');
+const emailService = require('../services/email.service.js')
 
 
 const registerUser = asyncHandler(async (req , res) => {
@@ -34,6 +35,8 @@ const registerUser = asyncHandler(async (req , res) => {
         userData : user , 
         token : token
     });
+
+    await emailService.sendRegisterEmail(user.email , user.name);
 });
 
 const loginUser = asyncHandler(async (req , res) => {

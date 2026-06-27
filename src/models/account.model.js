@@ -8,13 +8,15 @@ const accountSchema = new mongoose.Schema({
         index : true
     } ,
     status : {
+        type : String ,
         enum : {
             values : ["ACTIVE" , "FROZEN" , "CLOSED"] ,
-            message : "Status can be either ACTIVE , FROZEN or CLOSED"
-        }
+            message : "Status can be either ACTIVE , FROZEN or CLOSED" , 
+        } ,
+        default : "ACTIVE"
     } , 
     currency : {
-        type : "String" ,
+        type : String ,
         requied : [true , "currency is required while creating an account"] ,
         default : "PKR"
     } 

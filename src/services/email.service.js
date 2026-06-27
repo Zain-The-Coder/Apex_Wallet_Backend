@@ -40,14 +40,104 @@ const sendEmail = async (to, subject, text, html) => {
   }
 };
 
-async function sendRegisterEmail (userEmail , name) {
-    const subject = "Welcome To Banking Management System !" ;
-    const text = `Hello ${name} , \n \n Thank you for your registering in Banking Management System.
-    We are excited to have your on board ! \n \n Best Regards , \n The Banking Management System Owner` ;
-    const html = `<p>Hello ${name} , </p> <p> Thank you for your registering in Banking Management System.
-    We are excited to have your on board ! </p> <p> Best Regards , <br /> The Banking Management System Owner </p>`
+async function sendRegisterEmail(userEmail, name) {
+  const subject = "Welcome to Banking Management System!";
 
-    await sendEmail(userEmail , subject , text , html);
+  const text = `Hello ${name},
+
+Thank you for registering with the Banking Management System.
+
+We're excited to have you on board! You can now securely manage your account and perform transactions with ease.
+
+Best Regards,
+Banking Management System Team`;
+
+  const html = `
+    <p>Hello <strong>${name}</strong>,</p>
+
+    <p>Thank you for registering with the <strong>Banking Management System</strong>.</p>
+
+    <p>We're excited to have you on board! You can now securely manage your account and perform transactions with ease.</p>
+
+    <p>
+      Best Regards,<br>
+      <strong>Banking Management System Team</strong>
+    </p>
+  `;
+
+  await sendEmail(userEmail, subject, text, html);
 }
 
-module.exports = {sendRegisterEmail}
+async function sendTransactionEmail(userEmail, name, amount, toAccount) {
+  const subject = "Transaction Successful";
+
+  const text = `Hello ${name},
+
+Your transaction has been completed successfully.
+
+Amount: ${amount}
+Transferred To: ${toAccount}
+
+Thank you for using Banking Management System.
+
+Best Regards,
+Banking Management System Team`;
+
+  const html = `
+    <p>Hello <strong>${name}</strong>,</p>
+
+    <p>Your transaction has been completed successfully.</p>
+
+    <ul>
+      <li><strong>Amount:</strong> ${amount}</li>
+      <li><strong>Transferred To:</strong> ${toAccount}</li>
+    </ul>
+
+    <p>Thank you for using <strong>Banking Management System</strong>.</p>
+
+    <p>
+      Best Regards,<br>
+      <strong>Banking Management System Team</strong>
+    </p>
+  `;
+
+  await sendEmail(userEmail, subject, text, html);
+}
+
+async function failTransactionEmail(userEmail, name, amount, toAccount) {
+  const subject = "Transaction Failed";
+
+  const text = `Hello ${name},
+
+Unfortunately, your transaction could not be completed.
+
+Amount: ${amount}
+Intended Recipient: ${toAccount}
+
+Please verify your account balance and recipient details, then try again. If the problem persists, contact support.
+
+Best Regards,
+Banking Management System Team`;
+
+  const html = `
+    <p>Hello <strong>${name}</strong>,</p>
+
+    <p>Unfortunately, your transaction could not be completed.</p>
+
+    <ul>
+      <li><strong>Amount:</strong> ${amount}</li>
+      <li><strong>Intended Recipient:</strong> ${toAccount}</li>
+    </ul>
+
+    <p>Please verify your account balance and recipient details, then try again. If the problem persists, contact support.</p>
+
+    <p>
+      Best Regards,<br>
+      <strong>Banking Management System Team</strong>
+    </p>
+  `;
+
+  await sendEmail(userEmail, subject, text, html);
+}
+
+module.exports = {sendRegisterEmail , sendTransactionEmail , failTransactionEmail}

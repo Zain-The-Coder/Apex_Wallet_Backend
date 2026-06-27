@@ -22,7 +22,13 @@ const userSchema = new mongoose.Schema({
         required : [true , "password is required !"] ,
         minlength : [6 , "password should be contain more than 5 characters !"] ,
         select : false 
-    } 
+    }  ,
+    systemUser : {
+        type : Boolean ,
+        default : false  ,
+        immutable : true ,
+        select : false
+    }
 } , {timestamps : true});
 
 userSchema.pre("save" , async function (next) {

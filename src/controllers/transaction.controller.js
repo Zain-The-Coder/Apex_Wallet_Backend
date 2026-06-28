@@ -2,6 +2,8 @@ const transactionModel = require("../models/transaction.model.js");
 const ledgerModel = require('../models/ledger.model.js')
 const asyncHandler = require('../utils/asyncHandler.js');
 const accountModel = require("../models/account.model.js");
+const { default: mongoose } = require("mongoose");
+const {sendTransactionEmail} = require('../services/email.service.js')
 
 
 const initialTransaction = asyncHandler(async (req , res) => {
@@ -69,7 +71,56 @@ const initialTransaction = asyncHandler(async (req , res) => {
             status : 500 ,
             message : "Account disactive or closed between one or both !"
         })
-    }
+    };
+
+    const balance = await fromUserAccount.getBalance();
+
+    if(balance < amount) {
+        return res.status(403).json({
+            status : 403 ,
+            message : `Insufficient Balance . Your Balance is ${balance}`
+        })
+    };
+
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    const transaction = await transactionModel.create({
+        fromAccount ,
+        toAccount ,
+        amount ,
+        idempotencyKey ,
+        status : "PENDING"
+    } , {session});
+
+    const debitLedgerModel = await ledgerModel.create({
+        account : fromAccount ,
+        amount : amount ,
+        transaction : transaction._id ,
+        type : "DEBIT"
+    } , {status});
+
+    const creditLedgerModel = await ledgerModel.create({
+        account : toAccount ,
+        amount : amount ,
+        transaction : transaction._id ,
+        type : "CREDIT"
+    } , {status});
+
+    transaction.status = "COMPLETED" ;
+    await transaction.save({session});
+
+    await session.commitTransaction();
+    session.endSession();
+
+    sendTransactionEmail(req.user.email , req.user.name , amount , toAccount);
+
+    res.status(201).json({
+        status : 201 , 
+        message : "Transaction Completed Successfully !" ,
+        transaction_Details : transaction
+    })
+
     
 });
 

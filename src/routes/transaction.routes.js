@@ -1,7 +1,9 @@
 const express = require('express');
 
 const transactionRouter = express.Router();
+const authMiddleware = require('../middlewares/auth.middleware.js');
+const transectionController = require('../controllers/transaction.controller.js')
 
-// transactionRouter.post("/")
+transactionRouter.post("/" , authMiddleware.authMiddleware , transectionController.initialTransaction );
 
 module.exports = transactionRouter ;

@@ -15,6 +15,9 @@ app.use(cors({
     credentials: true 
 }));
 
+app.use('/' , (req , res) => {
+    res.send("server hosted successfully ")
+})
 app.use("/api/auth", authRouter) ;
 app.use("/api/accounts" , accountRouter);
 app.use("/api/transactions" , transactionRouter);

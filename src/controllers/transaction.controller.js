@@ -211,4 +211,25 @@ const { toAccount, amount, idempotencyKey } = req.body
 
 });
 
-module.exports = {initialTransaction , createInitialFundsTransaction};
+const getTransactions = asyncHandler(async (req, res) => {
+
+    const account = await accountModel.findOne({
+        user: req.user._id
+    });
+
+    const transactions = await transactionModel.find({
+        $or: [
+            { fromAccount: account._id },
+            { toAccount: account._id }
+        ]
+    })
+    .populate("fromAccount")
+    .populate("toAccount")
+    .sort({ createdAt: -1 });
+
+    res.json({
+        transactions
+    });
+});
+
+module.exports = {initialTransaction , createInitialFundsTransaction , getTransactions};

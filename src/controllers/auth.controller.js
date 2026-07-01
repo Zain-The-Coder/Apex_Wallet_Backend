@@ -48,8 +48,10 @@ res.cookie("token", token, {
 const loginUser = asyncHandler(async (req , res) => {
     const {email , password} = req.body ;
 
-    const user = await userModel.findOne({email}).select("+password");
-
+const user = await userModel
+    .findOne({ email })
+    .select("+password +systemUser");
+    
     if(!user) {
         return res.status(401).json({
             status : 401 ,

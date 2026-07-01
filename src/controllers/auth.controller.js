@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const emailService = require('../services/email.service.js');
 const tokenBlacklistModel = require('../models/blackList.model.js')
 
-
+//register controller updated
 const registerUser = asyncHandler(async (req , res) => {
     const {email , name , password} = req.body ;
 
@@ -42,7 +42,11 @@ res.cookie("token", token, {
         token : token
     });
 
-    await emailService.sendRegisterEmail(user.email , user.name);
+    try {
+        await emailService.sendRegisterEmail(user.email , user.name);
+    } catch (emailErr) {
+        console.error("Failed to send welcome email:", emailErr);
+    }
 });
 
 const loginUser = asyncHandler(async (req , res) => {
@@ -51,7 +55,7 @@ const loginUser = asyncHandler(async (req , res) => {
 const user = await userModel
     .findOne({ email })
     .select("+password +systemUser");
-    
+
     if(!user) {
         return res.status(401).json({
             status : 401 ,

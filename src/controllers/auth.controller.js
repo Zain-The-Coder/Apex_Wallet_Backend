@@ -19,6 +19,13 @@ const registerUser = asyncHandler(async (req , res) => {
         })
     };
 
+    if(password.length < 6) {
+        return res.status(401).json({
+            status : 401 ,
+            message : "Password Must be greater than 6 characters"
+        })
+    }
+
     const user = await userModel.create({
         email , name , password
     });

@@ -13,7 +13,6 @@ const userSchema = new mongoose.Schema({
      name : {
         type : String ,
         required : [true , "Name is Required !"] ,
-        unique : [true , "username already taken"] ,
         lowercase : true ,
         trim : true
     } ,

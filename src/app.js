@@ -11,6 +11,7 @@ app.use(cookieParser());
 app.use(cors({
     origin: [
         'http://localhost:5173',
+        'https://apex-wallet-frontend.vercel.app/'
     ],
     credentials: true 
 }));
